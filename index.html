@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hair By Sarah | Luxury Hair Studio · Wardle, Rochdale</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:        #070f0a;
+      --deep:       #0d1f14;
+      --forest:     #1a3d28;
+      --green:      #2c5f3e;
+      --mid:        #3d7a52;
+      --sage:       #7aab8a;
+      --mist:       #c8ddd0;
+      --cream:      #f7f3ee;
+      --warm:       #faf7f3;
+      --gold:       #c9a96e;
+      --gold-light: #e8cfa0;
+      --white:      #ffffff;
+      --text:       #1a1a1a;
+      --soft:       #6b7c72;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      color: var(--text);
+      background: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--green); border-radius: 3px; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 3rem;
+      height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(7, 15, 10, 0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201,169,110,0.12);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--white);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .nav-logo em { font-style: italic; color: var(--gold); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--gold);
+      transform: scaleX(0); transform-origin: right;
+      transition: transform 0.3s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+    .nav-cta {
+      background: transparent;
+      border: 1px solid rgba(201,169,110,0.5);
+      color: var(--gold) !important;
+      padding: 0.5rem 1.4rem;
+      border-radius: 50px;
+      transition: background 0.3s, border-color 0.3s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: rgba(201,169,110,0.12) !important; border-color: var(--gold) !important; }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 10; }
+    .hamburger span { display: block; width: 24px; height: 1.5px; background: var(--white); transition: 0.3s; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      background: var(--ink);
+    }
+
+    /* Orb glows */
+    .hero-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none;
+    }
+    .hero-orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(44,95,62,0.35) 0%, transparent 70%);
+      top: -100px; left: -100px;
+      animation: orbFloat1 8s ease-in-out infinite;
+    }
+    .hero-orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(201,169,110,0.2) 0%, transparent 70%);
+      bottom: 50px; right: -50px;
+      animation: orbFloat2 10s ease-in-out infinite;
+    }
+    .hero-orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(61,122,82,0.25) 0%, transparent 70%);
+      top: 40%; left: 50%;
+      animation: orbFloat3 12s ease-in-out infinite;
+    }
+    @keyframes orbFloat1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,30px)} }
+    @keyframes orbFloat2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,-40px)} }
+    @keyframes orbFloat3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-25px)} }
+
+    /* 3D floating shapes */
+    .hero-shape {
+      position: absolute; pointer-events: none;
+      border: 1px solid rgba(201,169,110,0.15);
+      border-radius: 50%;
+      animation: shapeSpin linear infinite;
+    }
+    .hero-shape-1 { width: 200px; height: 200px; top: 15%; right: 10%; animation-duration: 20s; }
+    .hero-shape-2 { width: 120px; height: 120px; bottom: 20%; left: 8%; animation-duration: 15s; animation-direction: reverse; border-color: rgba(44,95,62,0.3); }
+    .hero-shape-3 { width: 60px; height: 60px; top: 30%; left: 20%; animation-duration: 25s; }
+    @keyframes shapeSpin { from{transform:rotate(0deg) translateX(20px) rotate(0deg)} to{transform:rotate(360deg) translateX(20px) rotate(-360deg)} }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; padding: 120px 2rem 2rem;
+      max-width: 900px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      color: var(--gold); font-size: 0.72rem; letter-spacing: 0.22em;
+      text-transform: uppercase; font-weight: 500;
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 0.8s 0.3s forwards;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(201,169,110,0.5));
+      width: 60px;
+    }
+    .hero-eyebrow::after { background: linear-gradient(to left, transparent, rgba(201,169,110,0.5)); }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(4rem, 10vw, 8rem);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 1s 0.5s forwards;
+    }
+    .hero h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 1rem; font-weight: 300; letter-spacing: 0.05em;
+      color: rgba(255,255,255,0.55);
+      max-width: 420px; margin: 0 auto 3rem;
+      line-height: 1.8;
+      opacity: 0; animation: fadeUp 1s 0.7s forwards;
+    }
+
+    .hero-btns {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 1s 0.9s forwards;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 1rem 2.2rem;
+      border-radius: 50px;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,0.1);
+      transform: translateX(-100%); transition: transform 0.4s;
+    }
+    .btn:hover::before { transform: translateX(0); }
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold) 0%, #b8904a 100%);
+      color: var(--ink);
+      box-shadow: 0 8px 32px rgba(201,169,110,0.35);
+    }
+    .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(201,169,110,0.45); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.6); transform: translateY(-3px); }
+
+    /* hero scroll indicator */
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: rgba(255,255,255,0.3); font-size: 0.65rem; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0; animation: fadeIn 1s 1.5s forwards;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, rgba(201,169,110,0.6), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse { 0%,100%{opacity:0.4;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.2)} }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    /* hero stats */
+    .hero-stats {
+      position: absolute; bottom: 3rem; right: 4rem;
+      display: flex; flex-direction: column; gap: 1.5rem;
+      opacity: 0; animation: fadeIn 1s 1.2s forwards;
+    }
+    .hero-stat { text-align: right; }
+    .hero-stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem; font-weight: 300;
+      color: var(--gold); line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.65rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+    }
+
+    /* ─── SECTION BASE ─── */
+    section { position: relative; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
+
+    .label-tag {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      font-weight: 600; margin-bottom: 1rem;
+    }
+    .label-tag::before { content: ''; display: block; width: 30px; height: 1px; background: currentColor; opacity: 0.5; }
+
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem;
+    }
+
+    /* ─── REVEAL ANIMATION ─── */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ─── MARQUEE STRIP ─── */
+    .marquee-strip {
+      background: var(--gold);
+      padding: 0.9rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .marquee-track {
+      display: inline-flex; gap: 0;
+      animation: marquee 25s linear infinite;
+    }
+    .marquee-item {
+      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+      font-weight: 600; color: var(--ink);
+      padding: 0 2.5rem;
+    }
+    .marquee-dot { color: var(--forest); }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ─── ABOUT ─── */
+    .about {
+      padding: 8rem 0;
+      background: var(--warm);
+    }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6rem; align-items: center;
+    }
+    .about .label-tag { color: var(--green); }
+    .about .section-heading { color: var(--forest); }
+    .about .section-heading em { font-style: italic; color: var(--green); }
+
+    .about-body {
+      font-size: 1.05rem; line-height: 1.9; color: var(--soft);
+      margin-bottom: 2.5rem; font-weight: 300;
+    }
+
+    .about-pills {
+      display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2.5rem;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.55rem 1.1rem;
+      background: var(--white);
+      border: 1px solid rgba(44,95,62,0.15);
+      border-radius: 50px;
+      font-size: 0.82rem; font-weight: 500; color: var(--forest);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+    }
+    .pill:hover {
+      background: var(--forest); color: var(--white);
+      transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,61,40,0.2);
+    }
+
+    /* 3D image card */
+    .about-img-wrap {
+      perspective: 1200px;
+    }
+    .about-img-card {
+      position: relative; border-radius: 24px; overflow: hidden;
+      box-shadow:
+        0 2px 4px rgba(0,0,0,0.04),
+        0 8px 16px rgba(0,0,0,0.08),
+        0 24px 48px rgba(0,0,0,0.12),
+        0 0 0 1px rgba(255,255,255,0.1);
+      transition: transform 0.1s ease-out;
+      transform-style: preserve-3d;
+    }
+    .about-img-card img { width: 100%; height: 520px; object-fit: cover; display: block; }
+    .about-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,31,20,0.7) 0%, transparent 50%);
+      display: flex; align-items: flex-end; padding: 2rem;
+    }
+    .about-img-badge {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: var(--white);
+    }
+    .about-img-badge span { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.7; display: block; margin-bottom: 0.2rem; }
+    .about-img-badge strong { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; }
+
+    /* decorative accent */
+    .about-img-wrap::before {
+      content: '';
+      position: absolute; top: -20px; right: -20px;
+      width: 180px; height: 180px;
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 50%; z-index: -1;
+    }
+    .about-img-wrap::after {
+      content: '';
+      position: absolute; bottom: -30px; left: -30px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(44,95,62,0.15), transparent 70%);
+      z-index: -1;
+    }
+
+    /* ─── SERVICES ─── */
+    .services {
+      padding: 8rem 0;
+      background: var(--deep);
+      overflow: hidden;
+    }
+    .services .label-tag { color: var(--sage); }
+    .services .section-heading { color: var(--white); }
+    .services .section-heading em { font-style: italic; color: var(--gold); }
+    .services-intro { color: rgba(255,255,255,0.45); font-weight: 300; max-width: 480px; margin-bottom: 4rem; line-height: 1.8; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* 3D Tilt cards */
+    .s-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 2.2rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      transform-style: preserve-3d;
+      transform: perspective(800px);
+      cursor: default;
+      position: relative; overflow: hidden;
+    }
+    .s-card::before {
+      content: '';
+      position: absolute; inset: 0; border-radius: 20px;
+      background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .s-card:hover { border-color: rgba(201,169,110,0.25); box-shadow: 0 24px 60px rgba(0,0,0,0.4); }
+    .s-card:hover::before { opacity: 1; }
+
+    .s-card-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: rgba(201,169,110,0.1);
+      border: 1px solid rgba(201,169,110,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1.5rem;
+    }
+    .s-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 400;
+      color: var(--white); margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .s-item {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .s-item:last-child { border: none; }
+    .s-item-name { font-size: 0.9rem; color: rgba(255,255,255,0.6); font-weight: 300; }
+    .s-item-price { font-size: 1rem; font-weight: 600; color: var(--gold); margin-left: 1rem; white-space: nowrap; }
+
+    .s-note {
+      text-align: center; color: rgba(255,255,255,0.3);
+      font-size: 0.85rem; margin-top: 3rem; font-weight: 300;
+    }
+    .s-note a { color: var(--gold); text-decoration: none; }
+
+    /* ─── GALLERY ─── */
+    .gallery {
+      padding: 8rem 0;
+      background: var(--ink);
+    }
+    .gallery .label-tag { color: var(--gold); }
+    .gallery .section-heading { color: var(--white); }
+    .gallery .section-heading em { font-style: italic; color: var(--sage); }
+    .gallery-intro { color: rgba(255,255,255,0.4); font-weight: 300; max-width: 500px; margin-bottom: 1rem; line-height: 1.8; }
+    .gallery-hint {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 3rem; font-weight: 500;
+    }
+    .gallery-hint-icon { font-size: 1rem; animation: flipHint 2s ease-in-out infinite; }
+    @keyframes flipHint { 0%,100%{transform:rotateY(0)} 50%{transform:rotateY(180deg)} }
+
+    /* 3D Flip cards */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+    .flip-card {
+      perspective: 1000px;
+      aspect-ratio: 4/5;
+      cursor: pointer;
+    }
+    .flip-card-inner {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 16px;
+    }
+    .flip-card:hover .flip-card-inner,
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-face {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .flip-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .flip-face-back { transform: rotateY(180deg); }
+
+    .flip-badge {
+      position: absolute;
+      top: 0.75rem; left: 0.75rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .badge-after { background: var(--gold); color: var(--ink); }
+    .badge-before { background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); color: var(--white); border: 1px solid rgba(255,255,255,0.3); }
+
+    .flip-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+      padding: 2rem 1rem 1rem;
+      color: var(--white);
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.08em;
+    }
+
+    .gallery-more {
+      text-align: center; margin-top: 3rem;
+    }
+
+    /* ─── TESTIMONIAL ─── */
+    .testimonial {
+      padding: 7rem 0;
+      background: var(--forest);
+      overflow: hidden; position: relative;
+    }
+    .testimonial::before {
+      content: '"';
+      position: absolute; top: -1rem; left: 4rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20rem; color: rgba(255,255,255,0.04);
+      line-height: 1; pointer-events: none;
+    }
+    .testimonial-inner {
+      max-width: 760px; margin: 0 auto; text-align: center; padding: 0 2rem;
+    }
+    .testimonial blockquote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 300; font-style: italic;
+      color: var(--white); line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    .testimonial cite {
+      font-style: normal;
+      font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--gold); font-weight: 500;
+    }
+    .t-stars { color: var(--gold); font-size: 1rem; margin-bottom: 1.5rem; letter-spacing: 0.2em; }
+
+    /* ─── STUDIO BANNER ─── */
+    .studio-banner {
+      position: relative;
+      height: 70vh;
+      min-height: 400px;
+      overflow: hidden;
+    }
+    .studio-banner img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transform: scale(1.05);
+      transition: transform 8s ease;
+    }
+    .studio-banner:hover img { transform: scale(1); }
+    .studio-banner-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(7,15,10,0.75) 0%,
+        rgba(7,15,10,0.3) 50%,
+        rgba(7,15,10,0.1) 100%
+      );
+      display: flex; align-items: center;
+      padding: 0 4rem;
+    }
+    .studio-banner-text { max-width: 520px; }
+    .studio-banner-text .label-tag { color: var(--gold); margin-bottom: 1rem; }
+    .studio-banner-text h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 300; color: var(--white);
+      line-height: 1.15; margin-bottom: 1.25rem;
+    }
+    .studio-banner-text h2 em { font-style: italic; color: var(--gold); }
+    .studio-banner-text p {
+      color: rgba(255,255,255,0.65);
+      font-size: 1rem; line-height: 1.8; font-weight: 300;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 600px) {
+      .studio-banner-overlay { padding: 0 1.5rem; }
+      .studio-banner { height: 50vh; }
+    }
+
+    /* ─── BOOKING ─── */
+    .booking {
+      padding: 8rem 0;
+      background: var(--warm);
+    }
+    .booking .label-tag { color: var(--green); }
+    .booking .section-heading { color: var(--forest); }
+    .booking .section-heading em { font-style: italic; color: var(--green); }
+
+    .booking-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: start;
+    }
+    .booking-body { font-size: 1rem; color: var(--soft); line-height: 1.9; font-weight: 300; margin-bottom: 2.5rem; }
+
+    .contact-cards { display: flex; flex-direction: column; gap: 1rem; }
+    .c-card {
+      display: flex; align-items: center; gap: 1.2rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--white);
+      border-radius: 16px;
+      border: 1px solid rgba(44,95,62,0.1);
+      text-decoration: none; color: var(--text);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .c-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--green);
+      transform: scaleY(0); transform-origin: bottom;
+      transition: transform 0.3s;
+    }
+    .c-card:hover { transform: translateX(6px); box-shadow: 0 8px 32px rgba(44,95,62,0.12); border-color: rgba(44,95,62,0.25); }
+    .c-card:hover::before { transform: scaleY(1); }
+    .c-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      background: var(--mist);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .c-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--soft); font-weight: 600; }
+    .c-value { font-size: 0.98rem; font-weight: 600; color: var(--forest); }
+
+    .parking-tag {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.2rem;
+      background: var(--forest); color: var(--white);
+      border-radius: 50px; font-size: 0.8rem; font-weight: 500;
+    }
+
+    /* location card */
+    .location-card {
+      background: var(--deep);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .location-top {
+      padding: 3rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--forest), var(--deep));
+      position: relative; overflow: hidden;
+    }
+    .location-top::before {
+      content: '';
+      position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at 60% 40%, rgba(201,169,110,0.1), transparent 60%);
+    }
+    .location-icon { font-size: 3rem; margin-bottom: 1rem; display: block; position: relative; }
+    .location-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem; font-weight: 300; color: var(--white);
+      margin-bottom: 0.3rem; position: relative;
+    }
+    .location-area { font-size: 0.8rem; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; position: relative; }
+    .location-bottom { padding: 1.5rem; }
+    .location-note {
+      font-size: 0.85rem; color: rgba(255,255,255,0.4); text-align: center;
+      line-height: 1.7; margin-bottom: 1.5rem;
+    }
+    .location-btn {
+      display: block; text-align: center;
+      background: rgba(201,169,110,0.1);
+      border: 1px solid rgba(201,169,110,0.3);
+      color: var(--gold);
+      padding: 0.9rem; border-radius: 12px;
+      text-decoration: none; font-size: 0.82rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    .location-btn:hover { background: var(--gold); color: var(--ink); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 4rem 2rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1140px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 3rem; margin-bottom: 3rem;
+    }
+    .footer-brand {}
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem; font-weight: 300; color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+    .footer-logo em { font-style: italic; color: var(--gold); }
+    .footer-tagline { font-size: 0.82rem; color: rgba(255,255,255,0.3); line-height: 1.7; font-weight: 300; }
+
+    .footer-col h4 {
+      font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-bottom: 1.2rem; font-weight: 600;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .footer-links a {
+      color: rgba(255,255,255,0.5); text-decoration: none;
+      font-size: 0.88rem; transition: color 0.2s; font-weight: 300;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-bottom {
+      max-width: 1140px; margin: 0 auto;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.2); font-weight: 300; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; flex-direction: column; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(7,15,10,0.97); backdrop-filter: blur(20px); padding: 6rem 2rem 2rem; gap: 2rem; z-index: 5; justify-content: center; align-items: center; }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .nav-cta { display: none; }
+      .hero-stats { display: none; }
+      .about-grid, .booking-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .about-img-wrap { order: -1; }
+      .services-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+      section { padding: 5rem 0 !important; }
+    }
+    @media (max-width: 600px) {
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-btns { flex-direction: column; align-items: center; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#home" class="nav-logo">Hair By <em>Sarah</em></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">Studio</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#booking" class="nav-cta">Book Now</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-shape hero-shape-1"></div>
+    <div class="hero-shape hero-shape-2"></div>
+    <div class="hero-shape hero-shape-3"></div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">Private Hair Studio · Wardle, Rochdale</div>
+      <h1>
+        Hair By
+        <em>Sarah</em>
+      </h1>
+      <p class="hero-sub">A boutique, one-to-one experience in a beautifully designed private studio.</p>
+      <div class="hero-btns">
+        <a href="https://www.instagram.com/hairbysarahstudio" target="_blank" class="btn btn-gold">
+          Book on Instagram
+        </a>
+        <a href="tel:07854926439" class="btn btn-ghost">
+          07854 926 439
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">100%</div>
+        <div class="hero-stat-label">Private Studio</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Free</div>
+        <div class="hero-stat-label">Parking</div>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item">Balayage <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Highlights <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Full Colour <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Blow Dry <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Colour Correction <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Cut &amp; Style <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Toner <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Root Touch-Up <span class="marquee-dot">✦</span></span>
+      <!-- Duplicate for seamless loop -->
+      <span class="marquee-item">Balayage <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Highlights <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Full Colour <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Blow Dry <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Colour Correction <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Cut &amp; Style <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Toner <span class="marquee-dot">✦</span></span>
+      <span class="marquee-item">Root Touch-Up <span class="marquee-dot">✦</span></span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text">
+          <p class="label-tag reveal">About the Studio</p>
+          <h2 class="section-heading reveal reveal-delay-1">
+            A salon<br>experience <em>at home</em>
+          </h2>
+          <p class="about-body reveal reveal-delay-2">
+            Welcome to Hair By Sarah — a private luxury hair studio nestled in a beautifully converted home garage in Wardle, Rochdale. Here, you always get Sarah's complete attention in a calm, unhurried space designed entirely around you.
+          </p>
+          <p class="about-body reveal reveal-delay-2" style="margin-top:-1rem;">
+            With years of expertise across colour, cutting and styling, Sarah crafts results that are as unique as you are.
+          </p>
+          <div class="about-pills reveal reveal-delay-3">
+            <span class="pill">💚 Private 1-to-1</span>
+            <span class="pill">🅿️ Free Parking</span>
+            <span class="pill">✂️ Expert Colour</span>
+            <span class="pill">🌿 Relaxed Vibe</span>
+            <span class="pill">📍 Wardle, Rochdale</span>
+          </div>
+          <a href="#booking" class="btn btn-gold reveal reveal-delay-4" style="display:inline-flex;">Book an Appointment</a>
+        </div>
+        <div class="about-img-wrap reveal reveal-delay-2" id="aboutImgWrap">
+          <div class="about-img-card" id="aboutImgCard">
+            <img src="images/salon-interior.jpg" alt="Hair By Sarah Studio interior">
+            <div class="about-img-overlay">
+              <div class="about-img-badge">
+                <span>Studio</span>
+                <strong>Wardle, Rochdale</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="container">
+      <p class="label-tag reveal" style="color:var(--sage)">Price List</p>
+      <h2 class="section-heading reveal reveal-delay-1">
+        Services &amp; <em>Pricing</em>
+      </h2>
+      <p class="services-intro reveal reveal-delay-2">Every service is carried out with precision and care in a private, boutique setting.</p>
+
+      <div class="services-grid">
+
+        <div class="s-card reveal reveal-delay-1" data-tilt>
+          <div class="s-card-icon">✂️</div>
+          <h3>Cut &amp; Blow Dry</h3>
+          <div class="s-item">
+            <span class="s-item-name">Women's Cut &amp; Blow Dry</span>
+            <span class="s-item-price">£25</span>
+          </div>
+          <div class="s-item">
+            <span class="s-item-name">Girls Cut &amp; Blow Dry</span>
+            <span class="s-item-price">£15</span>
+          </div>
+        </div>
+
+        <div class="s-card reveal reveal-delay-2" data-tilt>
+          <div class="s-card-icon">💆‍♀️</div>
+          <h3>Wash &amp; Style</h3>
+          <div class="s-item">
+            <span class="s-item-name">Weekly Wash &amp; Blow Dry (Straight)</span>
+            <span class="s-item-price">£15</span>
+          </div>
+          <div class="s-item">
+            <span class="s-item-name">Weekly Wash &amp; Blow Dry (Curled)</span>
+            <span class="s-item-price">£20</span>
+          </div>
+        </div>
+
+        <div class="s-card reveal reveal-delay-3" data-tilt>
+          <div class="s-card-icon">🎨</div>
+          <h3>Colour Services</h3>
+          <div class="s-item">
+            <span class="s-item-name">Full Head Colour + Cut</span>
+            <span class="s-item-price">£55</span>
+          </div>
+          <div class="s-item">
+            <span class="s-item-name">Roots + Cut &amp; Blow Dry</span>
+            <span class="s-item-price">£50</span>
+          </div>
+          <div class="s-item">
+            <span class="s-item-name">Full Head Highlights + Cut</span>
+            <span class="s-item-price">from £65</span>
+          </div>
+          <div class="s-item">
+            <span class="s-item-name">Half Head Highlights + Cut</span>
+            <span class="s-item-price">£50</span>
+          </div>
+          <div class="s-item">
+            <span class="s-item-name">Toner</span>
+            <span class="s-item-price">£12</span>
+          </div>
+        </div>
+
+      </div>
+      <p class="s-note reveal">Not sure what you need? <a href="https://www.instagram.com/hairbysarahstudio" target="_blank">Message Sarah on Instagram</a> for a friendly chat.</p>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <p class="label-tag reveal" style="color:var(--gold)">Our Work</p>
+      <h2 class="section-heading reveal reveal-delay-1">
+        Before &amp; <em>After</em>
+      </h2>
+      <p class="gallery-intro reveal reveal-delay-2">Every result is crafted with precision and care.</p>
+      <div class="gallery-hint reveal reveal-delay-2">
+        <span class="gallery-hint-icon">🔄</span>
+        Hover or tap a photo to reveal the before
+      </div>
+
+      <div class="gallery-grid">
+
+        <div class="flip-card reveal reveal-delay-1">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-face-front">
+              <img src="images/gallery-1-after.jpg" alt="Roots - After">
+              <span class="flip-badge badge-after">After</span>
+              <div class="flip-label">Roots &amp; Colour</div>
+            </div>
+            <div class="flip-face flip-face-back">
+              <img src="images/gallery-1-before.jpg" alt="Roots - Before">
+              <span class="flip-badge badge-before">Before</span>
+              <div class="flip-label">Roots &amp; Colour</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card reveal reveal-delay-2">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-face-front">
+              <img src="images/gallery-2-after.jpg" alt="Highlights - After">
+              <span class="flip-badge badge-after">After</span>
+              <div class="flip-label">Highlights</div>
+            </div>
+            <div class="flip-face flip-face-back">
+              <img src="images/gallery-2-before.jpg" alt="Highlights - Before">
+              <span class="flip-badge badge-before">Before</span>
+              <div class="flip-label">Highlights</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card reveal reveal-delay-3">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-face-front">
+              <img src="images/gallery-4-after.jpg" alt="Blow Dry & Curl - After">
+              <span class="flip-badge badge-after">After</span>
+              <div class="flip-label">Blow Dry &amp; Curl</div>
+            </div>
+            <div class="flip-face flip-face-back">
+              <img src="images/gallery-4-before.jpg" alt="Blow Dry & Curl - Before">
+              <span class="flip-badge badge-before">Before</span>
+              <div class="flip-label">Blow Dry &amp; Curl</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card reveal reveal-delay-1">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-face-front">
+              <img src="images/gallery-3-after.jpg" alt="Balayage - After">
+              <span class="flip-badge badge-after">After</span>
+              <div class="flip-label">Balayage</div>
+            </div>
+            <div class="flip-face flip-face-back">
+              <img src="images/gallery-3-before.jpg" alt="Balayage - Before">
+              <span class="flip-badge badge-before">Before</span>
+              <div class="flip-label">Balayage</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card reveal reveal-delay-2">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-face-front">
+              <img src="images/gallery-5-after.jpg" alt="Gallery 5 - After">
+              <span class="flip-badge badge-after">After</span>
+              <div class="flip-label">Full Colour</div>
+            </div>
+            <div class="flip-face flip-face-back">
+              <img src="images/gallery-5-before.jpg" alt="Gallery 5 - Before">
+              <span class="flip-badge badge-before">Before</span>
+              <div class="flip-label">Full Colour</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card reveal reveal-delay-3">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-face-front">
+              <img src="images/gallery-6-after.jpg" alt="Gallery 6 - After">
+              <span class="flip-badge badge-after">After</span>
+              <div class="flip-label">Copper Colour</div>
+            </div>
+            <div class="flip-face flip-face-back">
+              <img src="images/gallery-6-before.jpg" alt="Gallery 6 - Before">
+              <span class="flip-badge badge-before">Before</span>
+              <div class="flip-label">Copper Colour</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="gallery-more reveal">
+        <a href="https://www.instagram.com/hairbysarahstudio" target="_blank" class="btn btn-ghost">
+          📸 &nbsp;More on Instagram
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDIO BANNER -->
+  <div class="studio-banner">
+    <img src="images/salon-wide.jpg" alt="Hair By Sarah Studio - Wardle, Rochdale">
+    <div class="studio-banner-overlay">
+      <div class="studio-banner-text">
+        <p class="label-tag reveal">The Studio</p>
+        <h2 class="reveal reveal-delay-1">A space designed<br>for <em>you</em></h2>
+        <p class="reveal reveal-delay-2">A fully equipped, private studio in Wardle, Rochdale. Complete with wash basin, Dyson tools, and a relaxed atmosphere — everything you need for the perfect appointment.</p>
+        <a href="#booking" class="btn btn-gold reveal reveal-delay-3">Book Now</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial">
+    <div class="testimonial-inner">
+      <div class="t-stars reveal">★★★★★</div>
+      <blockquote class="reveal reveal-delay-1">
+        "Sarah is absolutely amazing — the most relaxed and luxurious salon experience I've ever had. My hair has never looked better."
+      </blockquote>
+      <cite class="reveal reveal-delay-2">— Happy Client, Rochdale</cite>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section class="booking" id="booking">
+    <div class="container">
+      <div class="booking-grid">
+        <div>
+          <p class="label-tag reveal">Get in Touch</p>
+          <h2 class="section-heading reveal reveal-delay-1">
+            Book Your <em>Appointment</em>
+          </h2>
+          <p class="booking-body reveal reveal-delay-2">
+            Reach out to Sarah on Instagram or give her a call to check availability. The studio is in Wardle, Rochdale with plenty of free private parking right outside.
+          </p>
+          <div class="contact-cards">
+            <a href="https://www.instagram.com/hairbysarahstudio" target="_blank" class="c-card reveal reveal-delay-2">
+              <div class="c-icon">📱</div>
+              <div>
+                <div class="c-label">Instagram</div>
+                <div class="c-value">@hairbysarahstudio</div>
+              </div>
+            </a>
+            <a href="tel:07854926439" class="c-card reveal reveal-delay-3">
+              <div class="c-icon">📞</div>
+              <div>
+                <div class="c-label">Phone / Text</div>
+                <div class="c-value">07854 926 439</div>
+              </div>
+            </a>
+            <div class="c-card reveal reveal-delay-4" style="cursor:default;">
+              <div class="c-icon">📍</div>
+              <div>
+                <div class="c-label">Location</div>
+                <div class="c-value">Wardle, Rochdale</div>
+              </div>
+            </div>
+          </div>
+          <div class="parking-tag reveal reveal-delay-4">🅿️ &nbsp;Free private parking available</div>
+        </div>
+
+        <div class="reveal reveal-delay-2">
+          <div class="location-card">
+            <div class="location-top">
+              <span class="location-icon">📍</span>
+              <div class="location-name">Wardle</div>
+              <div class="location-area">Rochdale, Greater Manchester</div>
+            </div>
+            <div class="location-bottom">
+              <p class="location-note">
+                Full address is shared on booking<br>to protect privacy.
+              </p>
+              <a href="https://www.google.com/maps/search/Wardle+Rochdale+Greater+Manchester" target="_blank" class="location-btn">
+                View on Google Maps →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">Hair By <em>Sarah</em></div>
+        <p class="footer-tagline">Private luxury hair studio.<br>Wardle, Rochdale.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul class="footer-links">
+          <li><a href="#about">About the Studio</a></li>
+          <li><a href="#services">Services & Pricing</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#booking">Book Now</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul class="footer-links">
+          <li><a href="https://www.instagram.com/hairbysarahstudio" target="_blank">@hairbysarahstudio</a></li>
+          <li><a href="tel:07854926439">07854 926 439</a></li>
+          <li><a href="#">Wardle, Rochdale</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Hair By Sarah. All rights reserved.</p>
+      <p>Private Hair Studio · Wardle, Rochdale</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ── Mobile nav
+    function toggleNav() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+    });
+
+    // ── Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // ── 3D Tilt on service cards
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `perspective(800px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg) translateZ(8px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(800px) rotateY(0) rotateX(0) translateZ(0)';
+      });
+    });
+
+    // ── 3D Tilt on about image
+    const wrap = document.getElementById('aboutImgWrap');
+    const card = document.getElementById('aboutImgCard');
+    if (wrap && card) {
+      wrap.addEventListener('mousemove', e => {
+        const r = wrap.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `perspective(1200px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) translateZ(20px)`;
+      });
+      wrap.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1200px) rotateY(0) rotateX(0) translateZ(0)';
+      });
+    }
+
+    // ── Flip cards (touch / click support)
+    document.querySelectorAll('.flip-card').forEach(card => {
+      card.addEventListener('click', () => card.classList.toggle('flipped'));
+    });
+  </script>
+
+</body>
+</html>
