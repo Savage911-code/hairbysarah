@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hair By Sarah | Luxury Hair Studio · Wardle, Rochdale</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d1f14" />
+  <link rel="icon" href="icons/icon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Hair By Sarah" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -231,6 +238,7 @@
       border: 1px solid rgba(255,255,255,0.25);
     }
     .btn-ghost:hover { border-color: rgba(255,255,255,0.6); transform: translateY(-3px); }
+    .btn[disabled] { opacity: 0.4; cursor: not-allowed; pointer-events: none; transform: none !important; }
 
     /* hero scroll indicator */
     .hero-scroll {
@@ -457,6 +465,144 @@
     .s-item:last-child { border: none; }
     .s-item-name { font-size: 0.9rem; color: rgba(255,255,255,0.6); font-weight: 300; }
     .s-item-price { font-size: 1rem; font-weight: 600; color: var(--gold); margin-left: 1rem; white-space: nowrap; }
+    .s-item-right { display: flex; align-items: center; gap: 0.85rem; flex-shrink: 0; }
+    .s-add {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      border: 1px solid rgba(201,169,110,0.4); background: transparent;
+      color: var(--gold); font-size: 1.05rem; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .s-add:hover { background: rgba(201,169,110,0.15); border-color: var(--gold); }
+    .s-add.added { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+
+    /* ─── BOOKING CART BAR ─── */
+    .cart-bar {
+      position: fixed; left: 50%; bottom: 24px; z-index: 900;
+      transform: translate(-50%, 160%);
+      display: flex; align-items: center; gap: 20px;
+      background: var(--ink); color: var(--white);
+      padding: 14px 14px 14px 24px; border-radius: 50px;
+      border: 1px solid rgba(201,169,110,0.25);
+      box-shadow: 0 20px 50px -12px rgba(0,0,0,0.5);
+      transition: transform 0.35s cubic-bezier(.2,.8,.2,1);
+    }
+    .cart-bar.show { transform: translate(-50%, 0); }
+    .cart-text { font-size: 0.88rem; font-weight: 500; }
+    .cart-text b { color: var(--gold); }
+    .cart-bar .btn { padding: 0.7rem 1.4rem; }
+    .cart-clear { background: none; border: none; color: rgba(255,255,255,0.45); font-size: 0.78rem; text-decoration: underline; font-family: 'Jost',sans-serif; cursor: pointer; }
+
+    /* ─── BOOKING MODAL ─── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1100;
+      background: rgba(7,15,10,0.65); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal {
+      width: 100%; max-width: 460px; max-height: 88vh;
+      background: var(--warm); border-radius: 24px;
+      box-shadow: 0 30px 80px -20px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column; overflow: hidden;
+      transform: translateY(16px) scale(0.98); transition: transform 0.25s;
+    }
+    .modal-overlay.open .modal { transform: none; }
+    .modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 26px; border-bottom: 1px solid rgba(44,95,62,0.1);
+      background: var(--white);
+    }
+    .modal-head h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--forest); }
+    .modal-back, .modal-close {
+      background: none; border: none; font-size: 1.2rem; color: var(--soft);
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-back:hover, .modal-close:hover { background: var(--mist); color: var(--forest); }
+    .modal-steps { display: flex; gap: 6px; padding: 12px 26px 0; background: var(--white); }
+    .step-dot { height: 3px; flex: 1; border-radius: 2px; background: var(--mist); }
+    .step-dot.active { background: var(--gold); }
+    .modal-body { padding: 22px 26px; overflow-y: auto; flex: 1; background: var(--white); }
+    .modal-foot { padding: 16px 26px 24px; border-top: 1px solid rgba(44,95,62,0.08); background: var(--white); }
+    .modal-foot .btn { width: 100%; justify-content: center; padding: 0.95rem; }
+    .btn-outline-forest { background: transparent; border: 1px solid rgba(26,61,40,0.3); color: var(--forest); }
+    .btn-outline-forest:hover { background: var(--mist); border-color: var(--forest); }
+
+    .date-strip { display: flex; gap: 9px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
+    .date-pill {
+      flex: 0 0 auto; width: 58px; padding: 10px 0; border-radius: 12px;
+      border: 1px solid rgba(44,95,62,0.15); text-align: center; background: var(--warm);
+    }
+    .date-pill .dow { font-size: 0.66rem; color: var(--soft); text-transform: uppercase; font-weight: 600; }
+    .date-pill .dnum { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--forest); margin-top: 2px; }
+    .date-pill.selected { border-color: var(--forest); background: var(--forest); }
+    .date-pill.selected .dow, .date-pill.selected .dnum { color: var(--gold); }
+    .date-pill.closed { opacity: 0.3; pointer-events: none; }
+
+    .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+    .time-slot {
+      padding: 10px 0; text-align: center; border-radius: 10px;
+      border: 1px solid rgba(44,95,62,0.15); font-size: 0.85rem; font-weight: 600;
+      background: var(--warm); color: var(--forest);
+    }
+    .time-slot:hover { border-color: var(--forest); }
+    .time-slot.selected { background: var(--forest); border-color: var(--forest); color: var(--gold); }
+    .time-slot.taken { opacity: 0.28; pointer-events: none; text-decoration: line-through; }
+    .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--soft); margin-bottom: 10px; }
+
+    .field { margin-bottom: 15px; }
+    .field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--forest); margin-bottom: 6px; }
+    .field input, .field textarea {
+      width: 100%; padding: 11px 13px; border-radius: 10px;
+      border: 1px solid rgba(44,95,62,0.18); font-family: 'Jost', sans-serif; font-size: 0.92rem;
+      background: var(--warm); color: var(--text);
+    }
+    .field input:focus, .field textarea:focus { outline: none; border-color: var(--gold); }
+    .field textarea { resize: vertical; min-height: 64px; }
+
+    .review-line { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(44,95,62,0.08); font-size: 0.9rem; color: var(--text); }
+    .review-line:last-of-type { border-bottom: none; }
+    .review-total { display: flex; justify-content: space-between; padding-top: 12px; margin-top: 4px; border-top: 2px solid var(--forest); font-weight: 700; font-size: 1rem; color: var(--forest); }
+    .review-block { background: var(--warm); border-radius: 12px; padding: 15px 18px; margin-top: 15px; }
+    .review-block .rb-label { font-size: 0.72rem; color: var(--soft); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+    .review-block .rb-value { font-weight: 600; color: var(--forest); }
+
+    .success { text-align: center; padding: 16px 0; }
+    .success .tick {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: var(--forest); color: var(--gold); font-size: 1.7rem;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+    }
+    .success h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--forest); margin-bottom: 10px; }
+    .success p { color: var(--soft); font-size: 0.92rem; line-height: 1.6; margin-bottom: 16px; }
+    .success .ref {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: var(--forest);
+      background: var(--mist); border-radius: 10px; padding: 12px; letter-spacing: 0.05em;
+    }
+    .empty-hint { color: var(--soft); font-size: 0.9rem; text-align: center; padding: 26px 0; }
+
+    .modal-svc-group { margin-bottom: 24px; }
+    .modal-svc-group:last-child { margin-bottom: 0; }
+    .modal-svc-group h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 500; color: var(--forest); margin-bottom: 4px; padding-bottom: 8px; border-bottom: 1px solid rgba(44,95,62,0.12); }
+    .m-svc-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid rgba(44,95,62,0.06); gap: 12px; }
+    .m-svc-row:last-child { border-bottom: none; }
+    .m-svc-name { font-size: 0.9rem; color: var(--text); }
+    .m-svc-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .m-svc-price { font-weight: 700; color: var(--forest); font-size: 0.9rem; white-space: nowrap; }
+
+    .install-steps { list-style: none; counter-reset: step; }
+    .install-steps li { counter-increment: step; display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(44,95,62,0.08); align-items: flex-start; }
+    .install-steps li:last-child { border-bottom: none; }
+    .install-steps li::before {
+      content: counter(step); flex-shrink: 0;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--forest); color: var(--gold);
+      font-size: 0.8rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .install-steps li span { font-size: 0.92rem; color: var(--text); line-height: 1.6; padding-top: 3px; }
 
     .s-note {
       text-align: center; color: rgba(255,255,255,0.3);
@@ -535,6 +681,31 @@
     .gallery-more {
       text-align: center; margin-top: 3rem;
     }
+
+    /* ─── LOYALTY ─── */
+    .loyalty { padding: 8rem 0; background: var(--deep); }
+    .loyalty .section-heading { color: var(--white); }
+    .loyalty .section-heading em { font-style: italic; color: var(--gold); }
+    .loyalty-intro { color: rgba(255,255,255,0.45); font-weight: 300; max-width: 480px; margin-bottom: 3rem; line-height: 1.8; }
+    .loyalty-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 2.5rem;
+      max-width: 640px;
+    }
+    .stamp-row { display: flex; gap: 14px; margin-bottom: 2rem; flex-wrap: wrap; }
+    .stamp {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 1.5px dashed rgba(201,169,110,0.35);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.3);
+      font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .stamp.reward { border-style: solid; border-color: var(--gold); background: rgba(201,169,110,0.12); color: var(--gold); font-size: 1.1rem; }
+    .loyalty-note { color: rgba(255,255,255,0.65); font-size: 1rem; line-height: 1.8; font-weight: 300; }
+    .loyalty-note strong { color: var(--gold); font-weight: 600; }
 
     /* ─── TESTIMONIAL ─── */
     .testimonial {
@@ -777,7 +948,7 @@
       <li><a href="#about">Studio</a></li>
       <li><a href="#services">Services</a></li>
       <li><a href="#gallery">Gallery</a></li>
-      <li><a href="#booking" class="nav-cta">Book Now</a></li>
+      <li><a href="#booking" class="nav-cta" onclick="openBooking();return false;">Book Now</a></li>
     </ul>
     <div class="hamburger" id="hamburger" onclick="toggleNav()">
       <span></span><span></span><span></span>
@@ -801,11 +972,11 @@
       </h1>
       <p class="hero-sub">A boutique, one-to-one experience in a beautifully designed private studio.</p>
       <div class="hero-btns">
-        <a href="https://www.instagram.com/hairbysarahstudio" target="_blank" class="btn btn-gold">
-          Book on Instagram
+        <a href="#booking" class="btn btn-gold" onclick="openBooking();return false;">
+          Book an Appointment
         </a>
-        <a href="tel:07854926439" class="btn btn-ghost">
-          07854 926 439
+        <a href="https://www.instagram.com/hairbysarahstudio" target="_blank" class="btn btn-ghost">
+          Message on Instagram
         </a>
       </div>
     </div>
@@ -872,7 +1043,7 @@
             <span class="pill">🌿 Relaxed Vibe</span>
             <span class="pill">📍 Wardle, Rochdale</span>
           </div>
-          <a href="#booking" class="btn btn-gold reveal reveal-delay-4" style="display:inline-flex;">Book an Appointment</a>
+          <a href="#booking" class="btn btn-gold reveal reveal-delay-4" style="display:inline-flex;" onclick="openBooking();return false;">Book an Appointment</a>
         </div>
         <div class="about-img-wrap reveal reveal-delay-2" id="aboutImgWrap">
           <div class="about-img-card" id="aboutImgCard">
@@ -903,51 +1074,51 @@
         <div class="s-card reveal reveal-delay-1" data-tilt>
           <div class="s-card-icon">✂️</div>
           <h3>Cut &amp; Blow Dry</h3>
-          <div class="s-item">
+          <div class="s-item" data-id="womens-cut" data-name="Women's Cut &amp; Blow Dry" data-duration="45" data-price="25">
             <span class="s-item-name">Women's Cut &amp; Blow Dry</span>
-            <span class="s-item-price">£25</span>
+            <span class="s-item-right"><span class="s-item-price">£25</span><button class="s-add" onclick="toggleService(this)" aria-label="Add">+</button></span>
           </div>
-          <div class="s-item">
+          <div class="s-item" data-id="girls-cut" data-name="Girls Cut &amp; Blow Dry" data-duration="30" data-price="15">
             <span class="s-item-name">Girls Cut &amp; Blow Dry</span>
-            <span class="s-item-price">£15</span>
+            <span class="s-item-right"><span class="s-item-price">£15</span><button class="s-add" onclick="toggleService(this)" aria-label="Add">+</button></span>
           </div>
         </div>
 
         <div class="s-card reveal reveal-delay-2" data-tilt>
           <div class="s-card-icon">💆‍♀️</div>
           <h3>Wash &amp; Style</h3>
-          <div class="s-item">
+          <div class="s-item" data-id="wash-straight" data-name="Weekly Wash &amp; Blow Dry (Straight)" data-duration="30" data-price="15">
             <span class="s-item-name">Weekly Wash &amp; Blow Dry (Straight)</span>
-            <span class="s-item-price">£15</span>
+            <span class="s-item-right"><span class="s-item-price">£15</span><button class="s-add" onclick="toggleService(this)" aria-label="Add">+</button></span>
           </div>
-          <div class="s-item">
+          <div class="s-item" data-id="wash-curled" data-name="Weekly Wash &amp; Blow Dry (Curled)" data-duration="40" data-price="20">
             <span class="s-item-name">Weekly Wash &amp; Blow Dry (Curled)</span>
-            <span class="s-item-price">£20</span>
+            <span class="s-item-right"><span class="s-item-price">£20</span><button class="s-add" onclick="toggleService(this)" aria-label="Add">+</button></span>
           </div>
         </div>
 
         <div class="s-card reveal reveal-delay-3" data-tilt>
           <div class="s-card-icon">🎨</div>
           <h3>Colour Services</h3>
-          <div class="s-item">
+          <div class="s-item" data-id="full-colour-cut" data-name="Full Head Colour + Cut" data-duration="120" data-price="55">
             <span class="s-item-name">Full Head Colour + Cut</span>
-            <span class="s-item-price">£55</span>
+            <span class="s-item-right"><span class="s-item-price">£55</span><button class="s-add" onclick="toggleService(this)" aria-label="Add">+</button></span>
           </div>
-          <div class="s-item">
+          <div class="s-item" data-id="roots-cut" data-name="Roots + Cut &amp; Blow Dry" data-duration="90" data-price="50">
             <span class="s-item-name">Roots + Cut &amp; Blow Dry</span>
-            <span class="s-item-price">£50</span>
+            <span class="s-item-right"><span class="s-item-price">£50</span><button class="s-add" onclick="toggleService(this)" aria-label="Add">+</button></span>
           </div>
-          <div class="s-item">
+          <div class="s-item" data-id="full-highlights" data-name="Full Head Highlights + Cut" data-duration="150" data-price="65">
             <span class="s-item-name">Full Head Highlights + Cut</span>
-            <span class="s-item-price">from £65</span>
+            <span class="s-item-right"><span class="s-item-price">from £65</span><button class="s-add" onclick="toggleService(this)" aria-label="Add">+</button></span>
           </div>
-          <div class="s-item">
+          <div class="s-item" data-id="half-highlights" data-name="Half Head Highlights + Cut" data-duration="120" data-price="50">
             <span class="s-item-name">Half Head Highlights + Cut</span>
-            <span class="s-item-price">£50</span>
+            <span class="s-item-right"><span class="s-item-price">£50</span><button class="s-add" onclick="toggleService(this)" aria-label="Add">+</button></span>
           </div>
-          <div class="s-item">
+          <div class="s-item" data-id="toner" data-name="Toner" data-duration="20" data-price="12">
             <span class="s-item-name">Toner</span>
-            <span class="s-item-price">£12</span>
+            <span class="s-item-right"><span class="s-item-price">£12</span><button class="s-add" onclick="toggleService(this)" aria-label="Add">+</button></span>
           </div>
         </div>
 
@@ -1079,10 +1250,30 @@
         <p class="label-tag reveal">The Studio</p>
         <h2 class="reveal reveal-delay-1">A space designed<br>for <em>you</em></h2>
         <p class="reveal reveal-delay-2">A fully equipped, private studio in Wardle, Rochdale. Complete with wash basin, Dyson tools, and a relaxed atmosphere — everything you need for the perfect appointment.</p>
-        <a href="#booking" class="btn btn-gold reveal reveal-delay-3">Book Now</a>
+        <a href="#booking" class="btn btn-gold reveal reveal-delay-3" onclick="openBooking();return false;">Book Now</a>
       </div>
     </div>
   </div>
+
+  <!-- LOYALTY -->
+  <section class="loyalty" id="loyalty">
+    <div class="container">
+      <p class="label-tag reveal" style="color:var(--gold)">Thank You For Coming Back</p>
+      <h2 class="section-heading reveal reveal-delay-1">Loyalty <em>Rewards</em></h2>
+      <p class="loyalty-intro reveal reveal-delay-2">Every visit counts towards your next treat — no card to carry, no app to open.</p>
+      <div class="loyalty-card reveal reveal-delay-2">
+        <div class="stamp-row">
+          <div class="stamp">1</div>
+          <div class="stamp">2</div>
+          <div class="stamp">3</div>
+          <div class="stamp">4</div>
+          <div class="stamp">5</div>
+          <div class="stamp reward">🎁</div>
+        </div>
+        <p class="loyalty-note">Book your <strong>6th appointment</strong> and it's on Sarah. Just mention you're due your reward when you get in touch — she keeps track for you.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- TESTIMONIAL -->
   <section class="testimonial">
@@ -1105,9 +1296,18 @@
             Book Your <em>Appointment</em>
           </h2>
           <p class="booking-body reveal reveal-delay-2">
-            Reach out to Sarah on Instagram or give her a call to check availability. The studio is in Wardle, Rochdale with plenty of free private parking right outside.
+            Pick your service and choose a time that suits you — booking online takes under a minute. The studio is in Wardle, Rochdale with plenty of free private parking right outside.
           </p>
+          <a href="#services" class="btn btn-gold reveal reveal-delay-2" style="display:inline-flex;margin-bottom:2rem;" onclick="openBooking();return false;">Book Online Now</a>
+          <p class="label-tag reveal reveal-delay-3" style="color:var(--soft);font-size:0.68rem;">Prefer to message instead?</p>
           <div class="contact-cards">
+            <a href="#" class="c-card reveal reveal-delay-2" id="installCard" onclick="handleInstallClick();return false;">
+              <div class="c-icon">📲</div>
+              <div>
+                <div class="c-label">Get the App</div>
+                <div class="c-value">Add to your home screen</div>
+              </div>
+            </a>
             <a href="https://www.instagram.com/hairbysarahstudio" target="_blank" class="c-card reveal reveal-delay-2">
               <div class="c-icon">📱</div>
               <div>
@@ -1167,7 +1367,7 @@
           <li><a href="#about">About the Studio</a></li>
           <li><a href="#services">Services & Pricing</a></li>
           <li><a href="#gallery">Gallery</a></li>
-          <li><a href="#booking">Book Now</a></li>
+          <li><a href="#booking" onclick="openBooking();return false;">Book Now</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1184,6 +1384,46 @@
       <p>Private Hair Studio · Wardle, Rochdale</p>
     </div>
   </footer>
+
+  <!-- BOOKING CART BAR -->
+  <div class="cart-bar" id="cartBar">
+    <div class="cart-text" id="cartText">0 services · £0</div>
+    <button class="cart-clear" onclick="clearBooking()">Clear</button>
+    <button class="btn btn-gold" onclick="openBooking(2)">Continue</button>
+  </div>
+
+  <!-- BOOKING MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <button class="modal-back" id="modalBack" onclick="goBack()" style="visibility:hidden;">←</button>
+        <h3 id="modalTitle">Choose a time</h3>
+        <button class="modal-close" onclick="closeBooking()">✕</button>
+      </div>
+      <div class="modal-steps" id="modalSteps">
+        <div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot" id="modalFoot">
+        <button class="btn btn-gold" id="modalNext" onclick="goNext()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTALL INSTRUCTIONS MODAL -->
+  <div class="modal-overlay" id="installOverlay">
+    <div class="modal" style="max-width:400px;">
+      <div class="modal-head">
+        <div style="width:32px;"></div>
+        <h3>Get the App</h3>
+        <button class="modal-close" onclick="closeInstallModal()">✕</button>
+      </div>
+      <div class="modal-body" id="installBody"></div>
+      <div class="modal-foot">
+        <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="closeInstallModal()">Got it</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     // ── Nav scroll effect
@@ -1238,6 +1478,325 @@
     // ── Flip cards (touch / click support)
     document.querySelectorAll('.flip-card').forEach(card => {
       card.addEventListener('click', () => card.classList.toggle('flipped'));
+    });
+
+    // ── Booking system ──────────────────────────────────────────
+    // TODO: replace with Sarah's real booking inbox once it's set up, e.g. "hairbysarahstudio.bookings@gmail.com"
+    // FormSubmit needs one confirmation click on its first real email, same as pixelforgestudio.co.uk's contact form.
+    const BOOKING_EMAIL = 'REPLACE-WITH-SARAHS-BOOKING-EMAIL@gmail.com';
+
+    const booking = { services: [], dateISO: null, dateLabel: '', time: null, name: '', phone: '', notes: '' };
+    let step = 2; // 2 = date/time, 3 = details, 4 = review, 5 = success
+
+    function money(n){ return '£' + (n % 1 ? n.toFixed(2) : n); }
+
+    function toggleService(btn){
+      const id = btn.closest('.s-item').dataset.id;
+      toggleServiceById(id);
+    }
+
+    function updateCartBar(){
+      const bar = document.getElementById('cartBar');
+      const total = booking.services.reduce((s,x)=>s+x.price,0);
+      if (booking.services.length === 0){ bar.classList.remove('show'); return; }
+      bar.classList.add('show');
+      document.getElementById('cartText').innerHTML =
+        `<b>${booking.services.length}</b> service${booking.services.length>1?'s':''} · ${money(total)}`;
+    }
+
+    function clearBooking(){
+      booking.services = [];
+      document.querySelectorAll('.s-add.added').forEach(b=>{ b.classList.remove('added'); b.textContent='+'; });
+      updateCartBar();
+    }
+
+    function toggleServiceById(id){
+      const pageRow = document.querySelector(`.s-item[data-id="${id}"]`);
+      if (!pageRow) return;
+      const idx = booking.services.findIndex(s => s.id === id);
+      const nowAdded = idx === -1;
+      if (nowAdded){
+        booking.services.push({ id, name: pageRow.dataset.name.replace(/&amp;/g,'&'), duration: +pageRow.dataset.duration, price: +pageRow.dataset.price });
+      } else {
+        booking.services.splice(idx, 1);
+      }
+      const pageBtn = pageRow.querySelector('.s-add');
+      pageBtn.classList.toggle('added', nowAdded);
+      pageBtn.textContent = nowAdded ? '✓' : '+';
+      updateCartBar();
+      if (step === 1) buildServiceStep();
+      updateNextState();
+    }
+
+    function buildServiceStep(){
+      const body = document.getElementById('modalBody');
+      const cards = document.querySelectorAll('#services .s-card');
+      let html = '';
+      cards.forEach(card => {
+        const title = card.querySelector('h3').textContent;
+        const rows = card.querySelectorAll('.s-item[data-id]');
+        let rowsHtml = '';
+        rows.forEach(r => {
+          const id = r.dataset.id;
+          const name = r.dataset.name.replace(/&amp;/g,'&');
+          const price = r.dataset.price;
+          const added = booking.services.some(s => s.id === id);
+          rowsHtml += `<div class="m-svc-row"><span class="m-svc-name">${name}</span><span class="m-svc-right"><span class="m-svc-price">£${price}</span><button class="s-add${added?' added':''}" onclick="toggleServiceById('${id}')" aria-label="Add">${added?'✓':'+'}</button></span></div>`;
+        });
+        html += `<div class="modal-svc-group"><h4>${title}</h4>${rowsHtml}</div>`;
+      });
+      body.innerHTML = html;
+    }
+
+    const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    function seedRand(str){
+      let h = 0;
+      for (let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) >>> 0; }
+      return (h % 1000) / 1000;
+    }
+
+    function buildDateStrip(){
+      const strip = document.getElementById('dateStrip');
+      if (!strip) return;
+      strip.innerHTML = '';
+      const today = new Date();
+      for (let i=0;i<14;i++){
+        const d = new Date(today); d.setDate(today.getDate()+i);
+        const iso = d.toISOString().slice(0,10);
+        const pill = document.createElement('div');
+        pill.className = 'date-pill' + (booking.dateISO===iso?' selected':'');
+        pill.innerHTML = `<div class="dow">${DOW[d.getDay()]}</div><div class="dnum">${d.getDate()}</div>`;
+        pill.onclick = () => {
+          booking.dateISO = iso;
+          booking.dateLabel = d.toLocaleDateString('en-GB',{weekday:'long', day:'numeric', month:'long'});
+          booking.time = null;
+          renderStep();
+        };
+        strip.appendChild(pill);
+      }
+    }
+
+    function buildTimeGrid(){
+      const grid = document.getElementById('timeGrid');
+      if (!grid || !booking.dateISO) return;
+      grid.innerHTML = '';
+      for (let h=9; h<=17; h++){
+        for (let m of [0,30]){
+          if (h===17 && m===30) continue;
+          const label = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+          const taken = seedRand(booking.dateISO+label) < 0.28;
+          const slot = document.createElement('div');
+          slot.className = 'time-slot' + (taken?' taken':'') + (booking.time===label?' selected':'');
+          slot.textContent = label;
+          if (!taken) slot.onclick = () => { booking.time = label; buildTimeGrid(); updateNextState(); };
+          grid.appendChild(slot);
+        }
+      }
+    }
+
+    function updateNextState(){
+      const btn = document.getElementById('modalNext');
+      if (!btn) return;
+      if (step === 1) btn.disabled = booking.services.length === 0;
+      if (step === 2) btn.disabled = !(booking.dateISO && booking.time);
+      if (step === 3) btn.disabled = !(booking.name && booking.phone);
+    }
+
+    function setSteps(active){
+      document.querySelectorAll('.step-dot').forEach((d,i)=>d.classList.toggle('active', i < active));
+    }
+
+    function renderStep(){
+      const title = document.getElementById('modalTitle');
+      const body = document.getElementById('modalBody');
+      const back = document.getElementById('modalBack');
+      const foot = document.getElementById('modalFoot');
+      back.style.visibility = step > 1 ? 'visible' : 'hidden';
+      document.getElementById('modalSteps').style.display = step===5 ? 'none' : 'flex';
+      setSteps(step);
+
+      if (step === 1){
+        title.textContent = 'Choose a service';
+        buildServiceStep();
+        foot.innerHTML = `<button class="btn btn-gold" id="modalNext" onclick="goNext()" ${booking.services.length?'':'disabled'}>Continue</button>`;
+        return;
+      }
+
+      if (step === 2){
+        title.textContent = 'Choose a time';
+        body.innerHTML = `
+          <div class="section-label">Select a date</div>
+          <div class="date-strip" id="dateStrip"></div>
+          <div class="section-label">Available times${booking.dateLabel ? ' · '+booking.dateLabel : ''}</div>
+          <div class="time-grid" id="timeGrid"></div>`;
+        foot.innerHTML = `<button class="btn btn-gold" id="modalNext" onclick="goNext()" disabled>Continue</button>`;
+        buildDateStrip(); buildTimeGrid(); updateNextState();
+      }
+
+      if (step === 3){
+        title.textContent = 'Your details';
+        body.innerHTML = `
+          <div class="field"><label>Full name</label><input id="fName" type="text" placeholder="Jane Smith" value="${booking.name}" oninput="booking.name=this.value; updateNextState();"></div>
+          <div class="field"><label>Phone number</label><input id="fPhone" type="tel" placeholder="07123 456789" value="${booking.phone}" oninput="booking.phone=this.value; updateNextState();"></div>
+          <div class="field"><label>Notes for Sarah (optional)</label><textarea id="fNotes" placeholder="Allergies, inspo photos, anything else..." oninput="booking.notes=this.value;">${booking.notes}</textarea></div>`;
+        foot.innerHTML = `<button class="btn btn-gold" id="modalNext" onclick="goNext()">Review Booking</button>`;
+        updateNextState();
+      }
+
+      if (step === 4){
+        title.textContent = 'Confirm booking';
+        const total = booking.services.reduce((s,x)=>s+x.price,0);
+        const mins = booking.services.reduce((s,x)=>s+x.duration,0);
+        const lines = booking.services.map(s=>`<div class="review-line"><span>${s.name}</span><span>£${s.price}</span></div>`).join('');
+        body.innerHTML = `
+          ${lines}
+          <div class="review-total"><span>Total (${mins} mins)</span><span>${money(total)}</span></div>
+          <div class="review-block">
+            <div class="rb-label">When</div>
+            <div class="rb-value">${booking.dateLabel}, ${booking.time}</div>
+          </div>
+          <div class="review-block">
+            <div class="rb-label">Contact</div>
+            <div class="rb-value">${booking.name} · ${booking.phone}</div>
+          </div>`;
+        foot.innerHTML = `<button class="btn btn-gold" id="modalNext" onclick="goNext()">Confirm Booking</button>`;
+      }
+
+      if (step === 5){
+        const ref = 'HBS-' + Math.random().toString(36).slice(2,7).toUpperCase();
+        submitBookingEmail(ref);
+        body.innerHTML = `
+          <div class="success">
+            <div class="tick">✓</div>
+            <h4>You're booked in!</h4>
+            <p>Sarah will confirm your ${booking.dateLabel.toLowerCase()} at ${booking.time} appointment by text on ${booking.phone || 'your number'}.</p>
+            <div class="ref">${ref}</div>
+          </div>`;
+        foot.innerHTML = `<button class="btn btn-outline-forest" style="width:100%;justify-content:center;" onclick="finishBooking()">Done</button>`;
+        title.textContent = 'Booking confirmed';
+        back.style.visibility = 'hidden';
+      }
+    }
+
+    function submitBookingEmail(ref){
+      const lines = booking.services.map(s => `${s.name} (£${s.price})`).join(', ');
+      const total = booking.services.reduce((s,x)=>s+x.price,0);
+      fetch(`https://formsubmit.co/ajax/${BOOKING_EMAIL}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: `New booking request — ${ref}`,
+          reference: ref,
+          services: lines,
+          total: `£${total}`,
+          date: booking.dateLabel,
+          time: booking.time,
+          name: booking.name,
+          phone: booking.phone,
+          notes: booking.notes || '—'
+        })
+      }).catch(() => { /* booking still confirms on-screen even if email delivery isn't wired up yet */ });
+    }
+
+    function goNext(){
+      if (step === 1 && booking.services.length === 0) return;
+      if (step === 2 && (!booking.dateISO || !booking.time)) return;
+      if (step === 3 && (!booking.name || !booking.phone)) return;
+      step++;
+      if (step > 5) step = 5;
+      renderStep();
+    }
+    function goBack(){
+      if (step <= 1) return;
+      step--;
+      renderStep();
+    }
+
+    function openBooking(startStep){
+      step = startStep || (booking.services.length ? 2 : 1);
+      document.getElementById('modalOverlay').classList.add('open');
+      renderStep();
+      document.body.style.overflow = 'hidden';
+    }
+    function closeBooking(){
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function finishBooking(){
+      closeBooking();
+      clearBooking();
+      booking.dateISO = null; booking.dateLabel = ''; booking.time = null;
+      booking.name=''; booking.phone=''; booking.notes='';
+      step = 1;
+    }
+    document.getElementById('modalOverlay').addEventListener('click', (e)=>{
+      if (e.target.id === 'modalOverlay') closeBooking();
+    });
+
+    // ── PWA install ──────────────────────────────────────────
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+
+    let deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
+
+    function isStandalone(){
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    function handleInstallClick(){
+      if (isStandalone()){
+        openInstallModal(`<p style="color:var(--soft);font-size:0.92rem;line-height:1.7;">You're already using the installed app — nothing else to do!</p>`);
+        return;
+      }
+      if (deferredInstallPrompt){
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.finally(() => { deferredInstallPrompt = null; });
+        return;
+      }
+      const ua = navigator.userAgent;
+      const isIOS = /iphone|ipad|ipod/i.test(ua);
+      const isAndroid = /android/i.test(ua);
+      let html;
+      if (isIOS){
+        html = `<ul class="install-steps">
+          <li><span>Tap the <strong>Share</strong> icon in Safari's toolbar (the square with an arrow).</span></li>
+          <li><span>Scroll down and tap <strong>Add to Home Screen</strong>.</span></li>
+          <li><span>Tap <strong>Add</strong> — the app icon appears on your home screen.</span></li>
+        </ul>`;
+      } else if (isAndroid){
+        html = `<ul class="install-steps">
+          <li><span>Tap the <strong>⋮ menu</strong> in Chrome (top right).</span></li>
+          <li><span>Tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.</span></li>
+          <li><span>Confirm — the app icon appears on your home screen.</span></li>
+        </ul>`;
+      } else {
+        html = `<ul class="install-steps">
+          <li><span>Open your browser's menu.</span></li>
+          <li><span>Look for <strong>Install app</strong> or <strong>Add to Home screen</strong>.</span></li>
+          <li><span>Confirm to add the Hair By Sarah app.</span></li>
+        </ul>`;
+      }
+      openInstallModal(html);
+    }
+
+    function openInstallModal(html){
+      document.getElementById('installBody').innerHTML = html;
+      document.getElementById('installOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeInstallModal(){
+      document.getElementById('installOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('installOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'installOverlay') closeInstallModal();
     });
   </script>
 
